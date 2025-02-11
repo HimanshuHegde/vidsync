@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,6 +19,9 @@ export default function Home() {
         if (!roomCode.trim() || !userName.trim()) return;
         router.push(`/room/${roomCode}?name=${encodeURIComponent(userName)}`);
     };
+    useEffect(() => {
+        fetch(process.env.NEXT_PUBLIC_SOCKET_URL!)
+    }, []);
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white px-6 relative overflow-hidden">
