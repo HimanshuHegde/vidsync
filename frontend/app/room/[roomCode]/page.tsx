@@ -44,7 +44,9 @@ export default function Room() {
             else if(status!=data){
                 setStatus(data);
                 if(data==3||data==1){
-                    instance?.seekTo(time,true);
+                    let atime = instance?.getCurrentTime()-time;
+                    if(atime>5||atime<-5)
+                        instance?.seekTo(time,true);
                     instance?.playVideo();
                 }else if(data == 2){
                     instance?.pauseVideo();
