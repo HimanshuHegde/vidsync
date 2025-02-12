@@ -39,7 +39,7 @@ export default function Room() {
         });
 
         newSocket.on("trigger", ({data,time}:{data:number,time:number}) => {  
-            if(status==data&&data==3)
+            if(status==data)
                 return;
             else if(status!=data){
                 setStatus(data);
