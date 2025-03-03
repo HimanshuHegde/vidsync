@@ -1,7 +1,7 @@
 "use client";
 import YouTube from "react-youtube";
 import getYoutubeData from "@/backend/search";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
@@ -15,8 +15,8 @@ export default function Room() {
     const [videos, setVideos] = useState<any[]>([]);
     const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
     const [socket, setSocket] = useState<any>(null);
-    const [status,setStatus] = useState<number>(1);
-    const [instance,setInstance] = useState<any>();
+    const status = useRef<number>(1);
+    const instance = useRef<YouTube | null>(null);
 
     useEffect(() => {
         if (!socketUrl) return;
@@ -24,12 +24,10 @@ export default function Room() {
         const newSocket = io(socketUrl);
         setSocket(newSocket);
 
-        newSocket.on("connect", () => {
+        newSocket.on("connect", () => { 
             newSocket.emit("joinRoom", {roomCode,name});
         });
 
-        newSocket.on("message", (data) => {
-        });
 
         newSocket.on("selectedVideo", (data) => {
             if(selectedVideo==null)
@@ -38,28 +36,27 @@ export default function Room() {
                 setSelectedVideo(data);
         });
 
-        newSocket.on("trigger", ({data,time}:{data:number,time:number}) => {  
-            if(status==data)
+        newSocket.on("trigger", async ({data,time}:{data:number,time:number}) => {   
+            if(status.current==data || data == 3)
                 return;
-            else if(status!=data){
-                setStatus(data);
-                if(data==3||data==1){
-                    let atime = instance?.getCurrentTime()-time;
-                    if(atime>5||atime<-5)
-                        instance?.seekTo(time,true);
-                    instance?.playVideo();
+            else if(status.current!=data){
+                status.current = data;
+                if(data==1){
+                    let atime =await instance.current?.internalPlayer.getCurrentTime()-time; 
+                    if(atime>5||atime<-5)    
+                        instance?.current?.internalPlayer.seekTo(time,true);
+                    instance?.current?.internalPlayer.playVideo();
                 }else if(data == 2){
-                    instance?.pauseVideo();
+                    instance?.current?.internalPlayer.pauseVideo();
                 }
             }
-        })
-       
+        }) 
 
-    }, [instance]);
+    }, []);
     
 
-    function trigger({data}:{data:number}){
-        let time = instance.getCurrentTime();
+   async function trigger({data}:{data:number}){ 
+         let time = await instance.current?.internalPlayer.getCurrentTime(); 
         socket.emit("trigger", {data,roomCode,time});
     }
 
@@ -129,8 +126,7 @@ export default function Room() {
                             <YouTube
                                 videoId={selectedVideo}
                                 onStateChange={trigger}
-                                onReady={(e)=>{
-                                    setInstance(e.target)}}
+                                ref = {instance}
                                 opts={{ width: "100%", height: "400", playerVars: { autoplay: 1} }}
                                 className="rounded-xl"
                             />
