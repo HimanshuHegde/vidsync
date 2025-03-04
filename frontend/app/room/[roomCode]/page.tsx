@@ -37,7 +37,7 @@ export default function Room() {
         });
 
         newSocket.on("trigger", async ({data,time}:{data:number,time:number}) => {   
-            if(status.current==data || data == 3)
+            if(status.current==data || data != 1 && data != 2)
                 return;
             else if(status.current!=data){
                 status.current = data;
