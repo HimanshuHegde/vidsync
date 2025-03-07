@@ -71,7 +71,7 @@ export default function Room() {
     };
 
     return (
-        <div className="flex flex-col items-center min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white p-6 relative overflow-hidden">
+        <div className="flex flex-col items-center min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 text-white p-6 relative overflow-hidden w-full mx-auto">
             
             {/* Floating Neon Circle Background */}
             <div className="absolute top-0 left-0 w-full h-full">
@@ -86,17 +86,17 @@ export default function Room() {
                 <p className="text-gray-400 mt-2 text-sm md:text-base">Share this code to invite others.</p>
 
                 {/* Search Bar */}
-                <div className="flex mt-6 w-full max-w-lg mx-auto">
+                <div className="flex flex-wrap items-center mt-6 w-full max-w-lg mx-auto gap-2">
                     <input
                         type="text"
                         placeholder="Search YouTube..."
-                        className="flex-1 p-3 bg-gray-800 text-white border border-gray-600 rounded-l-md focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder-gray-400 transition-all"
+                        className="flex-1 p-3 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400 placeholder-gray-400 transition-all w-full sm:w-auto"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                     <button
                         onClick={handleSearch}
-                        className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-semibold rounded-r-md hover:opacity-80 transition duration-300"
+                        className="p-3 bg-gradient-to-r from-cyan-500 to-blue-500 text-black font-semibold rounded-md hover:opacity-80 transition duration-300 w-full sm:w-auto"
                     >
                         Search
                     </button>
@@ -108,8 +108,8 @@ export default function Room() {
                         <div
                             key={video.videoId}
                             className="cursor-pointer border border-gray-700 p-3 rounded-xl bg-gray-800 hover:bg-gray-700 transition shadow-md transform hover:scale-105 duration-300 overflow-hidden"
-                            onClick={() =>{ setSelectedVideo(video.videoId)
-                                socket.emit("selectedVideo", {videoId:video.videoId,roomCode});
+                            onClick={() => { setSelectedVideo(video.videoId);
+                                socket.emit("selectedVideo", { videoId: video.videoId, roomCode });
                             }}
                         >
                             <img src={video.thumbnail} alt={video.title} className="w-full rounded-md" />
@@ -126,8 +126,8 @@ export default function Room() {
                             <YouTube
                                 videoId={selectedVideo}
                                 onStateChange={trigger}
-                                ref = {instance}
-                                opts={{ width: "100%", height: "400", playerVars: { autoplay: 1} }}
+                                ref={instance}
+                                opts={{ width: "100%", height: "400", playerVars: { autoplay: 1 } }}
                                 className="rounded-xl"
                             />
                         </div>
