@@ -1,0 +1,1 @@
+🎥 VidSync — A real-time video syncing platform built with Next.js and Socket.IO. Watch videos together with friends, stay in sync across devices, and enjoy seamless playback control. Perfect for movie nights, study sessions, or remote hangouts. 🧑‍🤝‍🧑
